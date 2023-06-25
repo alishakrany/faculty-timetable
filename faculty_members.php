@@ -60,6 +60,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         form {
             display: inline-block;
             text-align: right;
+            direction: rtl;
+        }
+
+        table {
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        table td, table th {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f2f2f2;
         }
 
         label {
@@ -124,5 +139,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <button type="submit">إرسال</button>
     </form>
+
+
+
+    <h1>عرض أعضاء هيئة التدريس</h1>
+    
+    <?php
+// استعلام SELECT لاسترجاع الأعضاء الموجودين
+$selectQuery = "SELECT * FROM $tableName";
+$result = mysqli_query($conn, $selectQuery);
+
+if (mysqli_num_rows($result) > 0) {
+    echo "<h2>الأعضاء الموجودين:</h2>";
+    echo "<table>";
+    echo "<tr><th>رقم العضو</th><th>اسم العضو</th><th>الدرجة العلمية</th><th>تاريخ الانضمام</th><th>الترتيب حسب الأقدمية</th><th>الدور</th></tr>";
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo "<td>" . $row['member_id'] . "</td>";
+        echo "<td>" . $row['member_name'] . "</td>";
+        echo "<td>" . $row['academic_degree'] . "</td>";
+        echo "<td>" . $row['join_date'] . "</td>";
+        echo "<td>" . $row['ranking'] . "</td>";
+        echo "<td>" . $row['role'] . "</td>";
+        echo "</tr>";
+    }
+
+    echo "</table>";
+} else {
+    echo "<p>لا يوجد أعضاء موجودين حاليًا.</p>";
+}
+
+// إغلاق اتصال قاعدة البيانات
+mysqli_close($conn);
+?>
+    
+
 </body>
 </html>
