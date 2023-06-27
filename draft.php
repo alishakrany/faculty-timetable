@@ -1,3 +1,4 @@
+<?php
 // استعلام للتحقق من اختيار المستخدم الفترات بنجاح
 $checkSelectionQuery = "SELECT COUNT(*) as count FROM member_courses WHERE member_id = '$memberId' AND selected_session IS NOT NULL";
 $checkSelectionResult = mysqli_query($conn, $checkSelectionQuery);
@@ -117,3 +118,21 @@ while ($courseRow = mysqli_fetch_assoc($availableCoursesResult)) {
     }
 }
 
+
+
+
+
+$createTableQuery = "
+CREATE TABLE IF NOT EXISTS timetable (
+    timetable_id INT AUTO_INCREMENT PRIMARY KEY,
+    member_course_id INT,
+    classroom_id INT,
+    section_id INT,
+    UNIQUE KEY unique_member_course (member_course_id, classroom_id),
+    FOREIGN KEY (member_course_id) REFERENCES member_courses(member_course_id),
+    FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id),
+    FOREIGN KEY (section_id) REFERENCES sections(section_id)
+)";
+
+
+?>
