@@ -62,25 +62,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $classroom_id = $_POST["classroom_id"];
     $session_id = $_POST["session_id"];
 
-    // التحقق من عدم تكرار قيم الفترة والقاعة معًا في الجدول
-    $duplicateQuery = "SELECT * FROM timetable WHERE classroom_id = $classroom_id AND session_id = $session_id";
-    $duplicateResult = $conn->query($duplicateQuery);
-
+// التحقق من عدم تكرار قيم الفترة والقاعة معًا في الجدول
+$duplicateQuery = "SELECT *
+                FROM timetable t
+                INNER JOIN member_courses mc ON t.member_course_id = mc.member_course_id
+                INNER JOIN subjects s ON mc.subject_id = s.subject_id
+                INNER JOIN sections sec ON mc.section_id = sec.section_id
+                WHERE (t.classroom_id = $classroom_id AND t.session_id = $session_id)
+                OR (t.session_id = $session_id AND s.department_id = (SELECT subject.department_id FROM subjects subject WHERE subject.subject_id = mc.subject_id) AND s.level_id = (SELECT subject.level_id FROM subjects subject WHERE subject.subject_id = mc.subject_id))";
+$duplicateResult = $conn->query($duplicateQuery);
+    
     if ($duplicateResult->num_rows > 0) {
-        echo "
-        <p style='color: red;'>
-        خطأ: تم اختيار الفترة والقاعة مسبقًا
-        </p>";
+        echo "<p style='color: red;'>خطأ: تم اختيار الفترة والفرقة أو الفترة والقسم والمستوى مسبقًا</p>";
     } else {
         $insertQuery = "INSERT INTO timetable (member_course_id, classroom_id, session_id) VALUES ($member_course_id, $classroom_id, $session_id)";
-
+    
         if ($conn->query($insertQuery) === TRUE) {
             echo "تمت إضافة البيانات بنجاح";
         } else {
             echo "حدث خطأ أثناء إضافة البيانات: " . $conn->error;
         }
     }
-}
+    }
+
+
+
+// استعلام لجلب البيانات المرتبطة من الجداول الأخرى
+$recordsQuery = "
+    SELECT fm.member_name, s.subject_name, sec.section_name, se.session_name, c.classroom_name
+    FROM timetable t
+    INNER JOIN member_courses mc ON t.member_course_id = mc.member_course_id
+    INNER JOIN faculty_members fm ON mc.member_id = fm.member_id
+    INNER JOIN subjects s ON mc.subject_id = s.subject_id
+    INNER JOIN sections sec ON mc.section_id = sec.section_id
+    INNER JOIN sessions se ON t.session_id = se.session_id
+    INNER JOIN classrooms c ON t.classroom_id = c.classroom_id
+";
+
+$recordsResult = $conn->query($recordsQuery);
+// echo "<table border='1' cellpadding='10'>";
+// if ($recordsResult->num_rows > 0) {
+//     while ($row = $recordsResult->fetch_assoc()) {
+//         echo "<tr>";
+//         echo "<td>" . $row['member_name'] . "</td>";
+//         echo "<td>" . $row['subject_name'] . "</td>";
+//         echo "<td>" . $row['section_name'] . "</td>";
+//         echo "<td>" . $row['session_name'] . "</td>";
+//         echo "<td>" . $row['classroom_name'] . "</td>";
+//         echo "</tr>";
+//     }
+// } else {
+//     echo "<tr><td colspan='5'>لا توجد سجلات محفوظة</td></tr>";
+// }
+
+// echo "</table>";
+
 
 ?>
 
@@ -117,6 +153,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border: none;
             cursor: pointer;
         }
+
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table th, table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
     </style>
 
 </head>
@@ -126,9 +177,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <label for="member_course_id">المادة:</label>
         <select name="member_course_id" id="member_course_id">
             <?php
-            if ($subjectsResult->num_rows > 0) {
-                while ($row = $subjectsResult->fetch_assoc()) {
-                    echo "<option value='" . $row["subject_id"] . "'>" . $row["subject_name"] . "</option>";
+            $facultyMemberId = $_SESSION['member_id']; // استرداد معرف عضو هيئة التدريس المسجل
+
+            $memberCoursesQuery = "SELECT mc.member_course_id, s.subject_name 
+                                   FROM member_courses mc
+                                   INNER JOIN subjects s ON mc.subject_id = s.subject_id
+                                   WHERE mc.member_id = $facultyMemberId";
+
+            $memberCoursesResult = $conn->query($memberCoursesQuery);
+
+            if ($memberCoursesResult->num_rows > 0) {
+                while ($row = $memberCoursesResult->fetch_assoc()) {
+                    echo "<option value='" . $row["member_course_id"] . "'>" . $row["subject_name"] . "</option>";
                 }
             }
             ?>
@@ -161,30 +221,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <a href="logout.php">تسجيل الخروج</a>
 
+    <table border='1' cellpadding='10'>
+        <tr>
+            <th>اسم العضو</th>
+            <th>اسم المادة</th>
+            <th>اسم القسم</th>
+            <th>اسم الفترة</th>
+            <th>اسم القاعة</th>
+        </tr>
+        <?php
+        if ($recordsResult->num_rows > 0) {
+            while ($row = $recordsResult->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $row['member_name'] . "</td>";
+                echo "<td>" . $row['subject_name'] . "</td>";
+                echo "<td>" . $row['section_name'] . "</td>";
+                echo "<td>" . $row['session_name'] . "</td>";
+                echo "<td>" . $row['classroom_name'] . "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>لا توجد سجلات محفوظة</td></tr>";
+        }
+        ?>
+    </table>
 
-    <!-- <?php
-// استعلامات إضافية لاسترداد معلومات المعيد والسكشن
-$facultyMemberQuery = "SELECT member_id FROM member_courses WHERE member_course_id = $member_course_id";
-$facultyMemberResult = $conn->query($facultyMemberQuery);
-$facultyMemberId = ($facultyMemberResult->num_rows > 0) ? $facultyMemberResult->fetch_assoc()['member_id'] : '';
-
-$sectionQuery = "SELECT section_name FROM sections WHERE section_id = $section_id";
-$sectionResult = $conn->query($sectionQuery);
-$sectionName = ($sectionResult->num_rows > 0) ? $sectionResult->fetch_assoc()['section_name'] : '';
-
-$facultyMemberNameQuery = "SELECT member_name FROM faculty_members WHERE member_id = $facultyMemberId";
-$facultyMemberNameResult = $conn->query($facultyMemberNameQuery);
-$facultyMemberName = ($facultyMemberNameResult->num_rows > 0) ? $facultyMemberNameResult->fetch_assoc()['member_name'] : '';
-
-echo "<tr>";
-echo "<td>" . $subjectName . "</td>";
-echo "<td>" . $classroomName . "</td>";
-echo "<td>" . $sessionName . "</td>";
-echo "<td>" . $facultyMemberName . "</td>";
-echo "<td>" . $sectionName . "</td>";
-echo "</tr>";
-?> -->
-
-    
 </body>
 </html>
