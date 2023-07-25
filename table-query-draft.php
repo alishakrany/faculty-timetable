@@ -227,3 +227,22 @@ $timetableQuery = "SELECT subjects.subject_name, faculty_members.member_name, cl
 </body>
 </html>
 
+=============================================
+last working quiry
+=============================================
+
+SELECT 
+    s.day AS Day,
+    CONCAT(s.start_time, ' - ', s.end_time) AS Period,
+    IFNULL(CONCAT(sub.subject_name, ' / ', fm.member_name, ' / ', c.classroom_name), 'لا يوجد') AS Course_Details
+FROM
+    sessions s
+    LEFT JOIN timetable t ON s.session_id = t.session_id
+    LEFT JOIN member_courses mc ON t.member_course_id = mc.member_course_id
+    LEFT JOIN subjects sub ON mc.subject_id = sub.subject_id
+    LEFT JOIN faculty_members fm ON mc.member_id = fm.member_id
+    LEFT JOIN classrooms c ON t.classroom_id = c.classroom_id
+ORDER BY
+    FIELD(s.day, 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس');
+    
+===================================================
