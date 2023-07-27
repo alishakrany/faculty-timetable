@@ -86,37 +86,21 @@ $duplicateResult = $conn->query($duplicateQuery);
     }
 
 
-
 // استعلام لجلب البيانات المرتبطة من الجداول الأخرى
 $recordsQuery = "
-    SELECT fm.member_name, s.subject_name, sec.section_name, se.session_name, c.classroom_name
+    SELECT fm.member_name, s.subject_name, sec.section_name, se.session_name, c.classroom_name, lv.level_name, d.department_name
     FROM timetable t
     INNER JOIN member_courses mc ON t.member_course_id = mc.member_course_id
     INNER JOIN faculty_members fm ON mc.member_id = fm.member_id
     INNER JOIN subjects s ON mc.subject_id = s.subject_id
     INNER JOIN sections sec ON mc.section_id = sec.section_id
     INNER JOIN sessions se ON t.session_id = se.session_id
+    INNER JOIN levels lv ON s.level_id = lv.level_id
     INNER JOIN classrooms c ON t.classroom_id = c.classroom_id
+    INNER JOIN departments d ON s.department_id = d.department_id
 ";
 
 $recordsResult = $conn->query($recordsQuery);
-// echo "<table border='1' cellpadding='10'>";
-// if ($recordsResult->num_rows > 0) {
-//     while ($row = $recordsResult->fetch_assoc()) {
-//         echo "<tr>";
-//         echo "<td>" . $row['member_name'] . "</td>";
-//         echo "<td>" . $row['subject_name'] . "</td>";
-//         echo "<td>" . $row['section_name'] . "</td>";
-//         echo "<td>" . $row['session_name'] . "</td>";
-//         echo "<td>" . $row['classroom_name'] . "</td>";
-//         echo "</tr>";
-//     }
-// } else {
-//     echo "<tr><td colspan='5'>لا توجد سجلات محفوظة</td></tr>";
-// }
-
-// echo "</table>";
-
 
 ?>
 
@@ -224,8 +208,10 @@ $recordsResult = $conn->query($recordsQuery);
     <table border='1' cellpadding='10'>
         <tr>
             <th>اسم العضو</th>
-            <th>اسم المادة</th>
             <th>اسم القسم</th>
+            <th>اسم الفرقة</th>
+            <th>اسم السكشن</th>
+            <th>اسم المادة</th>
             <th>اسم الفترة</th>
             <th>اسم القاعة</th>
         </tr>
@@ -234,8 +220,10 @@ $recordsResult = $conn->query($recordsQuery);
             while ($row = $recordsResult->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>" . $row['member_name'] . "</td>";
-                echo "<td>" . $row['subject_name'] . "</td>";
+                echo "<td>" . $row['department_name'] . "</td>";
+                echo "<td>" . $row['level_name'] . "</td>";
                 echo "<td>" . $row['section_name'] . "</td>";
+                echo "<td>" . $row['subject_name'] . "</td>";
                 echo "<td>" . $row['session_name'] . "</td>";
                 echo "<td>" . $row['classroom_name'] . "</td>";
                 echo "</tr>";
