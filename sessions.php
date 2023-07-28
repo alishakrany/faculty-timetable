@@ -78,7 +78,7 @@ foreach ($days as $day) {
             margin: 20px;
         }
 
-        table {
+        /* table {
             margin: 0 auto;
             border-collapse: collapse;
         }
@@ -90,7 +90,7 @@ foreach ($days as $day) {
 
         table th {
             background-color: #f2f2f2;
-        }
+        } */
 
         button {
             padding: 10px 20px;
@@ -113,8 +113,14 @@ foreach ($days as $day) {
         }
 
     </style>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
+
+    <?php include 'navbar.php'; ?>
+
     <h1>جدول الجدول الزمني</h1>
     <form method="post">
         <button type="submit" name="add">إضافة الفترات</button>

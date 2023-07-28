@@ -104,8 +104,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #f2f2f2;
         }
     </style>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
+
+    <?php include 'navbar.php'; ?>
+
     <h1>اختيار المواد والسكاشن</h1>
 
     <form method="POST" action="">

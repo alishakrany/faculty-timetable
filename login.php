@@ -113,8 +113,14 @@ if (mysqli_num_rows($result) == 1) {
             background-color: #45a049;
         }
     </style>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
+
+    <?php include 'navbar.php'; ?>
+
     <h1>تسجيل الدخول</h1>
 
 

@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>نموذج البيانات</title>
-    <style>
+    <!-- <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -108,9 +108,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #B0171F;
         }
 
-    </style>
+    </style> -->
+    
+    <link rel="stylesheet" type="text/css" href="../style.css">
+
 </head>
 <body>
+
+<?php
+include dirname(__FILE__) . '/navbar.php';
+?>
+
     <h1>إدارة المواد</h1>
     <form method="post">
         <label for="subject_name">اسم المادة:</label>

@@ -13,10 +13,14 @@
       padding: 8px;
     }
   </style>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
-<h1>استعلام الجدول الزمني</h1>
+
+  <?php include 'navbar.php'; ?>
+  
+  <h1>استعلام الجدول الزمني</h1>
 
 <form method="post" action="">
   <label for="department">القسم :</label>

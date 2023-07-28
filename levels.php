@@ -76,8 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
     </style>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
+
+    <?php include 'navbar.php'; ?>
+
     <h1>إضافة فرق دراسية جديدة</h1>
     <form method="POST" action="">
         <div>

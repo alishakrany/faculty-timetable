@@ -108,7 +108,7 @@ $recordsResult = $conn->query($recordsQuery);
 <html>
 <head>
     <title>إدخال بيانات الجدول الزمني</title>
-    <style>
+    <!-- <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -152,10 +152,14 @@ $recordsResult = $conn->query($recordsQuery);
         table th {
             background-color: #f2f2f2;
         }
-    </style>
+    </style> -->
+    <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>
 <body>
+
+    <?php include 'navbar.php'; ?>
+
     <h2>إدخال بيانات الجدول الزمني</h2>
     <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <label for="member_course_id">المادة:</label>

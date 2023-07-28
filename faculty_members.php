@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             direction: rtl;
         }
 
-        table {
+        /* table {
             margin: 0 auto;
             border-collapse: collapse;
         }
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         table th {
             background-color: #f2f2f2;
-        }
+        } */
 
         label {
             display: block;
@@ -100,8 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
     </style>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 <body>
+
+    <?php include 'navbar.php'; ?>
+
     <h1>إضافة أعضاء هيئة التدريس</h1>
     <form method="POST" action="">
         <div>
