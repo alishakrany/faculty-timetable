@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS $tableName (
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     member_id INT,
+    registration_status TINYINT NOT NULL DEFAULT 0,
     FOREIGN KEY (member_id) REFERENCES faculty_members(member_id)
 )";
 

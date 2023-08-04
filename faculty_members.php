@@ -37,6 +37,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $insertResult = mysqli_query($conn, $insertQuery);
 
+
+
+    // بعد عملية الإدخال في جدول faculty_members
+    //اضافة بيانات تسجيل الدخول الخاصة بعضو الهيئة في جدول  users
+if ($insertResult) {
+    // إنشاء اسم مستخدم عشوائي
+    $username = 'user_' . uniqid();
+
+    // إنشاء كلمة مرور عشوائية
+    $password = bin2hex(random_bytes(8));
+
+    // إدخال بيانات المستخدم في جدول users
+    $insertUserQuery = "
+    INSERT INTO users (username, password, member_id)
+    VALUES ('$username', '$password', LAST_INSERT_ID())
+    ";
+
+    $insertUserResult = mysqli_query($conn, $insertUserQuery);
+
+    if ($insertUserResult) {
+        echo "<p>تم إنشاء حساب المستخدم بنجاح!</p>";
+        echo "<p>اسم المستخدم: $username</p>";
+        echo "<p>كلمة المرور: $password</p>";
+    } else {
+        echo "<p>حدث خطأ أثناء إنشاء حساب المستخدم: " . mysqli_error($conn) . "</p>";
+    }
+} else {
+    echo "<p>حدث خطأ أثناء إدخال البيانات: " . mysqli_error($conn) . "</p>";
+}
+
+
+
+
     if ($insertResult) {
         echo "<p>تم إدخال البيانات بنجاح!</p>";
     } else {
@@ -48,61 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>إضافة أعضاء هيئة التدريس</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 20px;
-            direction: rtl;
-        }
-
-        form {
-            display: inline-block;
-            text-align: right;
-            direction: rtl;
-        }
-
-        /* table {
-            margin: 0 auto;
-            border-collapse: collapse;
-        }
-
-        table td, table th {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
-
-        table th {
-            background-color: #f2f2f2;
-        } */
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input, select {
-            width: 200px;
-            padding: 5px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-    
+    <title>إضافة أعضاء هيئة التدريس</title>    
     <link rel="stylesheet" type="text/css" href="style.css">
-
 </head>
 <body>
 
