@@ -1,6 +1,16 @@
 <?php
 require_once("db_config.php");
 
+// التحقق من تسجيل الدخول
+session_start();
+
+// التحقق من وجود معرف الجلسة للمستخدم المسجل
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+    exit();
+}
+
+
 $tableName = "sessions";
 
 $createTableQuery = "
@@ -16,7 +26,7 @@ CREATE TABLE IF NOT EXISTS $tableName (
 $createTableResult = mysqli_query($conn, $createTableQuery);
 
 if ($createTableResult) {
-    echo "<p>تم إنشاء جدول الجدول الزمني بنجاح!</p>";
+    // echo "<p>تم إنشاء جدول الجدول الزمني بنجاح!</p>";
 } else {
     echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
 }
@@ -95,9 +105,11 @@ foreach ($days as $day) {
         button {
             padding: 10px 20px;
             background-color: #4CAF50;
+            font-size:18px;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius:8px;
         }
 
         button:hover {
@@ -124,6 +136,7 @@ foreach ($days as $day) {
     <h1>جدول الجدول الزمني</h1>
     <form method="post">
         <button type="submit" name="add">إضافة الفترات</button>
+        
     </form>
     <form method="post">
         <button type="submit" class="delete" name="delete">حذف الجدول </button>

@@ -1,6 +1,16 @@
 <?php
 require_once("db_config.php");
 
+// التحقق من تسجيل الدخول
+session_start();
+
+// التحقق من وجود معرف الجلسة للمستخدم المسجل
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+    exit();
+}
+
+
 $tableName = "classrooms";
 
 $createTableQuery = "
@@ -12,7 +22,7 @@ CREATE TABLE IF NOT EXISTS $tableName (
 $createTableResult = mysqli_query($conn, $createTableQuery);
 
 if ($createTableResult) {
-    echo "<p>تم إنشاء جدول القاعات الدراسية بنجاح!</p>";
+    // echo "<p>تم إنشاء جدول القاعات الدراسية بنجاح!</p>";
 } else {
     echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
 }
@@ -41,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>إضافة قاعة دراسية جديدة</title>
-    <style>
+    <!-- <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -76,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background-color: #45a049;
         }
     </style>
-    
+     -->
     <link rel="stylesheet" type="text/css" href="style.css">
 
 </head>

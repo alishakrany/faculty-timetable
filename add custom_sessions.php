@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS $tableName (
 $createTableResult = mysqli_query($conn, $createTableQuery);
 
 if ($createTableResult) {
-    echo "<p>تم إنشاء جدول الفترات (Sessions) بنجاح!</p>";
+    // echo "<p>تم إنشاء جدول الفترات (Sessions) بنجاح!</p>";
 } else {
     echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
 }
@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="time" name="end_time" id="end_time" required>
         </div>
 
-        <button type="submit">إضافة الفترة</button>
+        <input type="submit" value="إضافة" name="submit">
     </form>
 </body>
 </html>

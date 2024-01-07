@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS $tableName (
 $createTableResult = mysqli_query($conn, $createTableQuery);
 
 if ($createTableResult) {
-    echo "<p>تم إنشاء جدول المستخدمين بنجاح!</p>";
+    // echo "<p>تم إنشاء جدول المستخدمين بنجاح!</p>";
 } else {
     echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
 }
@@ -47,7 +47,7 @@ if (mysqli_num_rows($result) == 1) {
     $_SESSION['member_id'] = $memberId;
 
     // توجيه المستخدم إلى صفحة اختيار الفترات المناسبة للمواد
-    header("Location: timetable.php");
+    header("Location: index.php");
     exit();
 } else {
     // تسجيل الدخول غير صحيح

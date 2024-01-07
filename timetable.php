@@ -186,9 +186,9 @@ $recordsResult = $conn->query($recordsQuery);
             $facultyMemberId = $_SESSION['member_id']; // استرداد معرف عضو هيئة التدريس المسجل
 
             $memberCoursesQuery = "SELECT mc.member_course_id, s.subject_name 
-                                   FROM member_courses mc
-                                   INNER JOIN subjects s ON mc.subject_id = s.subject_id
-                                   WHERE mc.member_id = $facultyMemberId";
+                                    FROM member_courses mc
+                                    INNER JOIN subjects s ON mc.subject_id = s.subject_id
+                                    WHERE mc.member_id = $facultyMemberId";
 
             $memberCoursesResult = $conn->query($memberCoursesQuery);
 
@@ -229,7 +229,7 @@ $recordsResult = $conn->query($recordsQuery);
     <input type="submit" value="تمرير الدور" name="pass_role" style="background-color: orange">
 </form>
 
-    <button style="background-color: red; color:white; font-size:20px" href="logout.php">تسجيل الخروج</button>
+    <a style="background-color: red; color:white; font-size:20px" href="logout.php">تسجيل الخروج</a>
 
     <table border='1' cellpadding='10'>
         <tr>

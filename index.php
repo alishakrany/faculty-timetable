@@ -1,3 +1,16 @@
+<?php
+require_once("db_config.php");
+
+// التحقق من تسجيل الدخول
+session_start();
+
+// التحقق من وجود معرف الجلسة للمستخدم المسجل
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,6 +75,7 @@
             background-color: #FF6F99; /* لون الزر عند التحويم */
         }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -95,7 +109,9 @@
         <div class="glassmorphism">
             <a class="button" href="table_query.php"> عرض الجدول</a>
         </div>
-        <!-- يمكنك إضافة المزيد من الأزرار هنا -->
+        <div class="glassmorphism logout">
+            <a class="button" href="logout.php"> تسجيل الخروج </a>
+        </div>
     </div>
 </body>
 </html>

@@ -1,6 +1,16 @@
 <?php
 require_once("db_config.php");
 
+// التحقق من تسجيل الدخول
+session_start();
+
+// التحقق من وجود معرف الجلسة للمستخدم المسجل
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+    exit();
+}
+
+
 $tableName = "departments";
 
 $createTableQuery = "
@@ -12,7 +22,7 @@ CREATE TABLE IF NOT EXISTS $tableName (
 $createTableResult = mysqli_query($conn, $createTableQuery);
 
 if ($createTableResult) {
-    echo "<p>تم إنشاء جدول المواد بنجاح!</p>";
+    // echo "<p>تم إنشاء جدول المواد بنجاح!</p>";
 } else {
     echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
 }
