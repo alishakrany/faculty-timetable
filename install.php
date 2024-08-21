@@ -50,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             id INT AUTO_INCREMENT PRIMARY KEY,
             degree_name VARCHAR(255) NOT NULL
         )" );
-        
 
         createTable($conn, "departments", "
         CREATE TABLE IF NOT EXISTS departments (
@@ -71,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             password VARCHAR(255) NOT NULL,
             member_id INT,
             registration_status TINYINT NOT NULL DEFAULT 0,
-            FOREIGN KEY (member_id) REFERENCES faculty_members(member_id)
+            FOREIGN KEY (member_id) REFERENCES faculty_members(member_id) ON DELETE CASCADE
         )");
 
         createTable($conn, "levels", "
@@ -87,8 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             department_id INT NOT NULL,
             level_id INT NOT NULL,
             hours INT NOT NULL,
-            FOREIGN KEY (department_id) REFERENCES departments(department_id),
-            FOREIGN KEY (level_id) REFERENCES levels(level_id)
+            FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE,
+            FOREIGN KEY (level_id) REFERENCES levels(level_id) ON DELETE CASCADE
         )");
 
         createTable($conn, "sections", "
@@ -97,8 +96,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             section_name NVARCHAR(255) NOT NULL,
             department_id INT NOT NULL,
             level_id INT NOT NULL,
-            FOREIGN KEY (department_id) REFERENCES departments(department_id),
-            FOREIGN KEY (level_id) REFERENCES levels(level_id)
+            FOREIGN KEY (department_id) REFERENCES departments(department_id) ON DELETE CASCADE,
+            FOREIGN KEY (level_id) REFERENCES levels(level_id) ON DELETE CASCADE
         )");
 
         createTable($conn, "sessions", "
@@ -117,9 +116,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             member_id INT NOT NULL,
             subject_id INT NOT NULL,
             section_id INT NOT NULL,
-            FOREIGN KEY (member_id) REFERENCES faculty_members(member_id),
-            FOREIGN KEY (subject_id) REFERENCES subjects(subject_id),
-            FOREIGN KEY (section_id) REFERENCES sections(section_id)
+            FOREIGN KEY (member_id) REFERENCES faculty_members(member_id) ON DELETE CASCADE,
+            FOREIGN KEY (subject_id) REFERENCES subjects(subject_id) ON DELETE CASCADE,
+            FOREIGN KEY (section_id) REFERENCES sections(section_id) ON DELETE CASCADE
         )");
 
         createTable($conn, "timetable", "
@@ -128,9 +127,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             member_course_id INT,
             classroom_id INT,
             session_id INT,
-            FOREIGN KEY (member_course_id) REFERENCES member_courses(member_course_id),
-            FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id),
-            FOREIGN KEY (session_id) REFERENCES sessions(session_id)
+            FOREIGN KEY (member_course_id) REFERENCES member_courses(member_course_id) ON DELETE CASCADE,
+            FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id) ON DELETE CASCADE,
+            FOREIGN KEY (session_id) REFERENCES sessions(session_id) ON DELETE CASCADE
         )");
 
         // إضافة المدير إلى faculty_members
@@ -155,6 +154,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "<p>حدث خطأ أثناء إنشاء حساب المدير: " . mysqli_error($conn) . "</p>";
             }
+
             $insertDegreesQuery = "INSERT INTO academic_degrees (degree_name) VALUES ('أستاذ'), ('أستاذ مساعد'), ('مدرس'), ('مدرس مساعد'), ('معيد')";
             $insertDegreesResult = mysqli_query($conn, $insertDegreesQuery);
             
@@ -163,8 +163,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 echo "<p>حدث خطأ أثناء إضافة البيانات: " . mysqli_error($conn) . "</p>";
             }
-
-
         } else {
             echo "<p>حدث خطأ أثناء إضافة المدير إلى جدول faculty_members: " . mysqli_error($conn) . "</p>";
         }
@@ -173,87 +171,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <title>تثبيت النظام</title>
-    <script>
-        function sendDatabaseInfo() {
-            var dbHost = document.getElementById('db_host').value;
-            var dbUser = document.getElementById('db_user').value;
-            var dbPass = document.getElementById('db_pass').value;
-            var dbName = document.getElementById('db_name').value;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "install.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    document.getElementById('admin_form').style.display = 'block';
-                    document.getElementById('db_form').style.display = 'none';
-                }
-            };
-            xhr.send("db_host=" + dbHost + "&db_user=" + dbUser + "&db_pass=" + dbPass + "&db_name=" + dbName);
-        }
-
-        function sendAdminInfo() {
-            var adminUser = document.getElementById('admin_user').value;
-            var adminPass = document.getElementById('admin_pass').value;
-
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "install.php", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    document.getElementById('result').innerHTML = xhr.responseText;
-                }
-            };
-            xhr.send("admin_user=" + adminUser + "&admin_pass=" + adminPass);
-        }
-    </script>
-</head>
-<body>
-    <h1>تثبيت النظام</h1>
-    
-    <div id="db_form">
-        <h2>معلومات الاتصال بقاعدة البيانات</h2>
-        <label for="db_host">المضيف:</label>
-        <input type="text" id="db_host" name="db_host" required><br><br>
-        
-        <label for="db_user">اسم المستخدم:</label>
-        <input type="text" id="db_user" name="db_user" required><br><br>
-        
-        <label for="db_pass">كلمة المرور:</label>
-        <input type="password" id="db_pass" name="db_pass" required><br><br>
-        
-        <label for="db_name">اسم قاعدة البيانات:</label>
-        <input type="text" id="db_name" name="db_name" required><br><br>
-        
-        <button type="button" onclick="sendDatabaseInfo()">التالي</button>
-    </div>
-
-    <div id="admin_form" style="display: none;">
-        <h2>معلومات تسجيل دخول المدير</h2>
-        <label for="admin_user">اسم المستخدم:</label>
-        <input type="text" id="admin_user" name="admin_user" required><br><br>
-        
-        <label for="admin_pass">كلمة المرور:</label>
-        <input type="password" id="admin_pass" name="admin_pass" required><br><br>
-        
-        <button type="button" onclick="sendAdminInfo()">إنشاء الحساب</button>
-    </div>
-
-    <div id="result"></div>
-</body>
-</html>
-
-
-
-
-
