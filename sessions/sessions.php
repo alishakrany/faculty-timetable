@@ -85,9 +85,11 @@ foreach ($days as $day) {
             padding: 10px 20px;
             background-color: #4CAF50;
             font-size:18px;
+            font-size:18px;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius:8px;
             border-radius:8px;
         }
 
@@ -115,6 +117,7 @@ foreach ($days as $day) {
     <h1>جدول الجدول الزمني</h1>
     <form method="post">
         <button type="submit" name="add">إضافة الفترات</button>
+        
         
     </form>
     <form method="post">

@@ -1,6 +1,7 @@
 <!-- navbar.php -->
 <div class="navbar">
     <a class="logo" href="./"> الرئيسية</a>
+    <a class="logo" href="./"> الرئيسية</a>
     <div class="menu-toggle">
         <span></span>
         <span></span>
