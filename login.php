@@ -1,58 +1,26 @@
 <?php
-require_once("db_config.php");
-
-// Path: login.php
-$tableName = "users";
-
-$createTableQuery = "
-CREATE TABLE IF NOT EXISTS $tableName (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    member_id INT,
-    registration_status TINYINT NOT NULL DEFAULT 0,
-    FOREIGN KEY (member_id) REFERENCES faculty_members(member_id)
-)";
-
-$createTableResult = mysqli_query($conn, $createTableQuery);
-
-if ($createTableResult) {
-    echo "<p>تم إنشاء جدول المستخدمين بنجاح!</p>";
-} else {
-    echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
-}
-
-
-
 session_start();
+require_once('db_config.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-// استقبال بيانات تسجيل الدخول من النموذج
-$username = $_POST['username'];
-$password = $_POST['password'];
+    $query = "SELECT * FROM users WHERE username = '$username'";
+    $result = mysqli_query($conn, $query);
 
-// استعلام للتحقق من صحة معلومات تسجيل الدخول
-$query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-$result = mysqli_query($conn, $query);
-
-if (mysqli_num_rows($result) == 1) {
-    // تسجيل الدخول ناجح
-
-    // استرداد معرف العضو المقابل
-    $row = mysqli_fetch_assoc($result);
-    $memberId = $row['member_id'];
-
-    // حفظ معرف العضو في الجلسة
-    $_SESSION['member_id'] = $memberId;
-
-    // توجيه المستخدم إلى صفحة اختيار الفترات المناسبة للمواد
-    header("Location: timetable.php");
-    exit();
-} else {
-    // تسجيل الدخول غير صحيح
-    echo "اسم المستخدم أو كلمة المرور غير صحيحة.";
-}
+    if ($result && mysqli_num_rows($result) == 1) {
+        $row = mysqli_fetch_assoc($result);
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['member_id'] = $row['member_id'];
+            header("Location: index.php");
+            exit();
+        } else {
+            echo "كلمة المرور غير صحيحة.";
+        }
+    } else {
+        echo "اسم المستخدم غير صحيح.";
+    }
 }
 ?>
 

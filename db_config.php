@@ -1,15 +1,15 @@
 <?php
-// معلومات اتصال قاعدة البيانات
-$host = "localhost";
-$username = "ali";
-$password = "12345";
-$database = "sb_timetable";
+$servername = 'localhost';
+$username = 'root';
+$password = '';
+$dbname = 'timetable2';
 
-// إنشاء اتصال بقاعدة البيانات
-$conn = mysqli_connect($host, $username, $password, $database);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-// التحقق من نجاح الاتصال
-if (!$conn) {
-    die("فشل الاتصال بقاعدة البيانات: " . mysqli_connect_error());
+if ($conn->connect_error) {
+    die('Connection failed: ' . $conn->connect_error);
 }
+
+// ضبط الترميز بعد الاتصال
+$conn->set_charset('utf8mb4');
 ?>

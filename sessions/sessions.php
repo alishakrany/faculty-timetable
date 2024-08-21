@@ -1,24 +1,13 @@
 <?php
-require_once("db_config.php");
+require_once("../db_config.php");
 
-$tableName = "sessions";
+// التحقق من تسجيل الدخول
+session_start();
 
-$createTableQuery = "
-CREATE TABLE IF NOT EXISTS $tableName (
-    session_id INT AUTO_INCREMENT PRIMARY KEY,
-    day VARCHAR(255) NOT NULL,
-    session_name VARCHAR(255) NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
-    duration INT NOT NULL
-)";
-
-$createTableResult = mysqli_query($conn, $createTableQuery);
-
-if ($createTableResult) {
-    echo "<p>تم إنشاء جدول الجدول الزمني بنجاح!</p>";
-} else {
-    echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
+// التحقق من وجود معرف الجلسة للمستخدم المسجل
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+    exit();
 }
 
 // Define the sessions with their start time, end time, and duration
@@ -44,7 +33,7 @@ foreach ($days as $day) {
         $duration = $session["duration"];
 
         $insertQuery = "
-        INSERT INTO $tableName (day, session_name, start_time, end_time, duration)
+        INSERT INTO sessions (day, session_name, start_time, end_time, duration)
         VALUES ('$day', '$session_name', '$start_time', '$end_time', '$duration')
         ";
         $insertResult = mysqli_query($conn, $insertQuery);
@@ -95,9 +84,11 @@ foreach ($days as $day) {
         button {
             padding: 10px 20px;
             background-color: #4CAF50;
+            font-size:18px;
             color: white;
             border: none;
             cursor: pointer;
+            border-radius:8px;
         }
 
         button:hover {
@@ -114,7 +105,7 @@ foreach ($days as $day) {
 
     </style>
     
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="../style.css">
 
 </head>
 <body>
@@ -124,6 +115,7 @@ foreach ($days as $day) {
     <h1>جدول الجدول الزمني</h1>
     <form method="post">
         <button type="submit" name="add">إضافة الفترات</button>
+        
     </form>
     <form method="post">
         <button type="submit" class="delete" name="delete">حذف الجدول </button>
@@ -142,11 +134,11 @@ foreach ($days as $day) {
         <tbody>
             <?php
                 // اختر الجدول إذا كان موجودًا
-                $selectTableQuery = "SHOW TABLES LIKE '$tableName'";
+                $selectTableQuery = "SHOW TABLES LIKE 'sessions'";
                 $selectTableResult = mysqli_query($conn, $selectTableQuery);
                 if (mysqli_num_rows($selectTableResult) > 0) {
                     // الجدول موجود، قم بتنفيذ الاستعلام
-                    $selectQuery = "SELECT * FROM $tableName";
+                    $selectQuery = "SELECT * FROM sessions";
                     $selectResult = mysqli_query($conn, $selectQuery);
                     if ($selectResult) {
                         while ($row = mysqli_fetch_assoc($selectResult)) {

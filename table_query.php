@@ -20,7 +20,7 @@
 
   <?php include 'navbar.php'; ?>
   
-  <h1>استعلام الجدول الزمني</h1>
+  <h1>عرض الجدول </h1>
 
 <form method="post" action="">
   <label for="department">القسم :</label>
@@ -55,7 +55,7 @@
     ?>
   </select>
 
-  <input type="submit" value="عرض الجدول الزمني">
+  <input type="submit" value="عرض الجدول ">
 </form>
 
 <!-- <?php
@@ -66,8 +66,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   // التحقق من وجود بيانات
   if (mysqli_num_rows($allSessionsResult) > 0) {
-    // إنشاء جدول الجدول الزمني
-    echo '<h2>جدول الجدول الزمني:</h2>';
+    // إنشاء جدول الجدول 
+    echo '<h2>جدول الجدول :</h2>';
     echo '<table>';
     echo '<tr><th>اليوم</th><th>الفترة</th><th>a1</th><th>a2</th><th>a3</th><th>a4</th><th>a5</th></tr>';
 

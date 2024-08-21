@@ -2,26 +2,6 @@
 // تأكد من إضافة كود الاتصال بقاعدة البيانات هنا
 require_once("db_config.php");
 
-$createTableQuery = "
-CREATE TABLE IF NOT EXISTS timetable (
-    timetable_id INT AUTO_INCREMENT PRIMARY KEY,
-    member_course_id INT,
-    classroom_id INT,
-    session_id INT,
-    FOREIGN KEY (member_course_id) REFERENCES member_courses(member_course_id),
-    FOREIGN KEY (classroom_id) REFERENCES classrooms(classroom_id),
-    FOREIGN KEY (session_id) REFERENCES sessions(session_id)
-)";
-
-$createTableResult = mysqli_query($conn, $createTableQuery);
-
-if ($createTableResult) {
-    echo "<script> console.log('تم إنشاء جدول الجدول الزمني بنجاح!') </script>";
-} else {
-    echo "<p>حدث خطأ أثناء إنشاء الجدول: " . mysqli_error($conn) . "</p>";
-}
-
-
 // التحقق من تسجيل الدخول
 session_start();
 
@@ -186,9 +166,9 @@ $recordsResult = $conn->query($recordsQuery);
             $facultyMemberId = $_SESSION['member_id']; // استرداد معرف عضو هيئة التدريس المسجل
 
             $memberCoursesQuery = "SELECT mc.member_course_id, s.subject_name 
-                                   FROM member_courses mc
-                                   INNER JOIN subjects s ON mc.subject_id = s.subject_id
-                                   WHERE mc.member_id = $facultyMemberId";
+                                    FROM member_courses mc
+                                    INNER JOIN subjects s ON mc.subject_id = s.subject_id
+                                    WHERE mc.member_id = $facultyMemberId";
 
             $memberCoursesResult = $conn->query($memberCoursesQuery);
 
@@ -229,7 +209,7 @@ $recordsResult = $conn->query($recordsQuery);
     <input type="submit" value="تمرير الدور" name="pass_role" style="background-color: orange">
 </form>
 
-    <button style="background-color: red; color:white; font-size:20px" href="logout.php">تسجيل الخروج</button>
+    <a style="background-color: red; color:white; font-size:20px" href="logout.php">تسجيل الخروج</a>
 
     <table border='1' cellpadding='10'>
         <tr>

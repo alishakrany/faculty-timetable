@@ -1,3 +1,16 @@
+<?php
+require_once("db_config.php");
+
+// التحقق من تسجيل الدخول
+session_start();
+
+// التحقق من وجود معرف الجلسة للمستخدم المسجل
+if (!isset($_SESSION['member_id'])) {
+    header("Location: login.php"); // إعادة توجيه المستخدم إلى صفحة تسجيل الدخول إذا لم يكن مسجل الدخول
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,32 +75,33 @@
             background-color: #FF6F99; /* لون الزر عند التحويم */
         }
     </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="glassmorphism">
-            <a class="button" href="departments.php">اضافة شعبة</a>
+            <a class="button" href="departments/departments.php">اضافة شعبة</a>
         </div>
         <div class="glassmorphism">
-            <a class="button" href="levels.php">اضافة فرقة</a>
+            <a class="button" href="levels/levels.php">اضافة فرقة</a>
         </div>
         <div class="glassmorphism">
-            <a class="button" href="faculty_members.php">اضافة عضو هيئة تدريس</a>
+            <a class="button" href="members/faculty_members.php">اضافة عضو هيئة تدريس</a>
         </div>
         <div class="glassmorphism">
-            <a class="button" href="sessions.php">الفترات</a>
+            <a class="button" href="sessions/sessions.php">الفترات</a>
         </div>
         <div class="glassmorphism">
-            <a class="button" href="classrooms.php">اضافة قاعة</a>
+            <a class="button" href="classrooms/classrooms.php">اضافة قاعة</a>
         </div>
         <div class="glassmorphism">
-            <a class="button" href="sections.php">اضافة سكشن</a>
+            <a class="button" href="sections/sections.php">اضافة سكشن</a>
         </div>
         <div class="glassmorphism">
             <a class="button" href="subjects/subjects.php">اضافة مادة</a>
         </div>
         <div class="glassmorphism">
-            <a class="button" href="membercourses.php">توزيع مواد الاعضاء</a>
+            <a class="button" href="membercourses/membercourses.php">توزيع مواد الاعضاء</a>
         </div>
         <div class="glassmorphism">
             <a class="button" href="timetable.php">تسكين المواد</a>
@@ -95,7 +109,9 @@
         <div class="glassmorphism">
             <a class="button" href="table_query.php"> عرض الجدول</a>
         </div>
-        <!-- يمكنك إضافة المزيد من الأزرار هنا -->
+        <div class="glassmorphism logout">
+            <a class="button" href="logout.php"> تسجيل الخروج </a>
+        </div>
     </div>
 </body>
 </html>
